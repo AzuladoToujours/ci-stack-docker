@@ -1,0 +1,9 @@
+  version: "3.7"
+
+  services:
+    pinger:
+      image: alpine
+      command: ping www.google.com
+      deploy:
+        placement:
+          constraints: [node.role==worker]

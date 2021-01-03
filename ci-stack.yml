@@ -1,0 +1,56 @@
+  version: "3.7"
+
+  services:
+    portainer:
+      image: portainer/portainer-ce
+      command: -H unix:///var/run/docker.sock
+      ports:
+        - "9000:9000"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - portainer_data:/data
+      deploy:
+        replicas: 1
+        update_config:
+          parallelism: 1
+          order: start-first
+          failure_action: rollback
+        placement:
+          constraints: [node.role==manager]
+
+    visualizer:
+      image: dockersamples/visualizer
+      ports:
+        - "8081:8080"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      deploy:
+        replicas: 1
+        update_config:
+          parallelism: 1
+          order: start-first
+          failure_action: rollback
+        placement:
+          constraints: [node.role==manager]
+
+    jenkins:
+      user: root
+      image: "jenkinsci/blueocean"
+      ports:
+        - "8080:8080"
+      volumes:
+        - jenkins_data:/var/jenkins_home
+        - /usr/bin/docker:/usr/bin/docker
+        - /var/run/docker.sock:/var/run/docker.sock
+      deploy:
+        replicas: 1
+        update_config:
+          parallelism: 1
+          order: start-first
+          failure_action: rollback
+        placement:
+          constraints: [node.role==manager]
+
+  volumes:
+    portainer_data:
+    jenkins_data:
