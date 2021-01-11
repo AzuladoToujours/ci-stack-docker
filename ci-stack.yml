@@ -39,9 +39,7 @@
       ports:
         - "8080:8080"
       volumes:
-        - type: bind
-          source: $PWD/jenkins_data
-          target: /var/jenkins_home
+        - jenkins_data:/var/jenkins_home
         - /usr/bin/docker:/usr/bin/docker
         - /var/run/docker.sock:/var/run/docker.sock
       deploy:
@@ -55,3 +53,4 @@
 
   volumes:
     portainer_data:
+    jenkins_data:
