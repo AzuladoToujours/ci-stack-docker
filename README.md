@@ -3,14 +3,13 @@
 ## PREPARE ENVIRONMENT
 
 ```bash 
-# Create a carpet for the jenkins_data
-mkdir jenkins_data
-
 # Get the docker path and copy it.
 which docker
 ```
 
 Docker path is unique in each docker installation, so run the command and change it in the Jenkins-service.
+
+### CI-COMPOSE
 
 ```yaml
       volumes:
@@ -21,16 +20,22 @@ Docker path is unique in each docker installation, so run the command and change
         - /var/run/docker.sock:/var/run/docker.sock
 ```
 
+### CI-STACK
 
-
+```yaml
+     volumes:
+        - jenkins_data:/var/jenkins_home
+        - [which docker OUTPUT]:/usr/bin/docker
+        - /var/run/docker.sock:/var/run/docker.sock
+```
 
 ## DOCKER SWARM STACK
 ```bash
 # Run the stack config file
-docker stack deploy --compose-file ci-stack.yml ci-stack
+sh stack.sh
 
 # Delete the stack
-docker stack rm ci-stack
+docker stack rm stack
 ```
 
 
@@ -38,7 +43,7 @@ docker stack rm ci-stack
 
 ```bash
 # Run the docker-compose config file
-docker-compose -f ci-compose.yml up -d
+sh compose.sh
 
 # Delete the compose
 docker-compose -f ci-compose.yml down
